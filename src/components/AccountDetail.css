@@ -20,30 +20,31 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  position: relative;
 }
 
 .account-title h1 {
   margin: 0;
   font-size: 2rem;
   font-weight: 600;
-  position: relative;
-  z-index: 0;
 }
 
-.account-header .back-button {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+.account-detail .account-header .back-button {
+  background: #ffffff;
+  color: var(--primary-color);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s, transform 0.2s;
 }
 
-.account-header .back-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+.account-detail .account-header .back-button:hover {
+  background: #f0f0f0;
+  color: var(--primary-color);
+  transform: translateX(-2px);
 }
 
 .reputation-badge {
