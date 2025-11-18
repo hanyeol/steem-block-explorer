@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import BlockList from '../components/BlockList';
 import SearchBar from '../components/SearchBar';
 import WitnessList from '../components/WitnessList';
+import PostList from '../components/PostList';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const HomePage = () => {
       <SearchBar onSearch={handleSearch} />
       <BlockList />
       <WitnessList limit={25} />
+      <PostList limit={10} />
     </div>
   );
 };

@@ -111,3 +111,13 @@ export const getActiveWitnesses = async () => {
   const schedule = await getWitnessSchedule();
   return schedule.current_shuffled_witnesses || [];
 };
+
+/**
+ * Get discussions by created (latest posts)
+ */
+export const getLatestPosts = async (limit = 10) => {
+  return await rpcCall('condenser_api.get_discussions_by_created', [{
+    tag: '',
+    limit
+  }]);
+};
