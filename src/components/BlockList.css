@@ -1,0 +1,82 @@
+.block-list {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.block-header h2 {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+}
+
+.latest-block-info {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.latest-block-info .highlight {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.block-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.block-table thead {
+  background-color: var(--hover-bg);
+}
+
+.block-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.block-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.block-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.block-table tbody tr:hover {
+  background-color: var(--hover-bg);
+}
+
+.block-link {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.witness {
+  font-family: 'Courier New', monospace;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .block-table {
+    font-size: 0.9rem;
+  }
+
+  .block-table th,
+  .block-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
