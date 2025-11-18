@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestBlockNum, getBlocks } from '../services/steemApi';
+import { BlockListSkeleton } from './SkeletonLoader';
 import './BlockList.css';
 
 const BlockList = () => {
@@ -34,7 +35,7 @@ const BlockList = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading blocks...</div>;
+    return <BlockListSkeleton />;
   }
 
   if (error) {

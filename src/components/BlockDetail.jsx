@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getBlock } from '../services/steemApi';
+import { BlockDetailSkeleton } from './SkeletonLoader';
 import './BlockDetail.css';
 
 const BlockDetail = () => {
@@ -30,7 +31,7 @@ const BlockDetail = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading block...</div>;
+    return <BlockDetailSkeleton />;
   }
 
   if (error) {
