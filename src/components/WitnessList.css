@@ -1,0 +1,153 @@
+.witness-list {
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.witness-list-header {
+  margin-bottom: 1.5rem;
+}
+
+.witness-list-header h2 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.witness-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.witness-table {
+  width: 100%;
+}
+
+.witness-table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr 150px 120px;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--border-color);
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.witness-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 150px 120px;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+.witness-row:hover {
+  background-color: var(--hover-bg);
+}
+
+.witness-row:last-child {
+  border-bottom: none;
+}
+
+.witness-rank {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.witness-name a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.witness-name a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.witness-votes {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.witness-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-top20,
+.status-timeshare {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-top20 {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-timeshare {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.witness-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.refresh-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.refresh-button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .witness-table-header,
+  .witness-row {
+    grid-template-columns: 60px 1fr 100px;
+    gap: 0.5rem;
+  }
+
+  .witness-votes {
+    display: none;
+  }
+
+  .witness-list-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .witness-table-header,
+  .witness-row {
+    grid-template-columns: 50px 1fr 80px;
+  }
+
+  .witness-list {
+    padding: 1rem;
+  }
+}

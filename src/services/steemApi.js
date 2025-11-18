@@ -89,3 +89,25 @@ export const getTransaction = async (blockNum, txIndex) => {
   const block = await getBlock(blockNum);
   return block?.transactions[txIndex] || null;
 };
+
+/**
+ * Get witness schedule (active witnesses)
+ */
+export const getWitnessSchedule = async () => {
+  return await rpcCall('condenser_api.get_witness_schedule');
+};
+
+/**
+ * Get witnesses by vote (top witnesses)
+ */
+export const getWitnessesByVote = async (limit = 100) => {
+  return await rpcCall('condenser_api.get_witnesses_by_vote', ['', limit]);
+};
+
+/**
+ * Get active witnesses (currently producing blocks)
+ */
+export const getActiveWitnesses = async () => {
+  const schedule = await getWitnessSchedule();
+  return schedule.current_shuffled_witnesses || [];
+};

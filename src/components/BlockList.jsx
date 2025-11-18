@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getLatestBlockNum, getBlocks } from '../services/steemApi';
+import { getLatestBlockNum, getBlocks, getWitnessesByVote } from '../services/steemApi';
 import { BlockListSkeleton } from './SkeletonLoader';
 import './BlockList.css';
 
@@ -9,9 +9,11 @@ const BlockList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [latestBlock, setLatestBlock] = useState(null);
+  const [top20Witnesses, setTop20Witnesses] = useState([]);
 
   useEffect(() => {
     loadBlocks();
+    loadTop20Witnesses();
     // Refresh every 3 seconds (Steem block time)
     const interval = setInterval(loadBlocks, 3000);
     return () => clearInterval(interval);
@@ -28,6 +30,24 @@ const BlockList = () => {
       setError(err.message);
       setLoading(false);
     }
+  };
+
+  const loadTop20Witnesses = async () => {
+    try {
+      const witnesses = await getWitnessesByVote(20);
+      const witnessNames = witnesses.map(w => w.owner);
+      setTop20Witnesses(witnessNames);
+    } catch (err) {
+      console.error('Failed to load top 20 witnesses:', err);
+    }
+  };
+
+  const isTimeshareWitness = (witnessName) => {
+    // Only check if top20Witnesses is loaded
+    if (top20Witnesses.length === 0) {
+      return false;
+    }
+    return !top20Witnesses.includes(witnessName);
   };
 
   const formatTimestamp = (timestamp) => {
@@ -70,7 +90,14 @@ const BlockList = () => {
               </td>
               <td>{formatTimestamp(block.timestamp)}</td>
               <td>{block.transactions.length}</td>
-              <td className="witness">{block.witness}</td>
+              <td className="witness">
+                <Link to={`/account/${block.witness}`} className="witness-link">
+                  {block.witness}
+                </Link>
+                {isTimeshareWitness(block.witness) && (
+                  <span className="timeshare-badge">Timeshare</span>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

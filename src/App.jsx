@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import BlockPage from './pages/BlockPage';
+import AccountPage from './pages/AccountPage';
 import './App.css';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/block/:blockNum" element={<BlockPage />} />
+          <Route path="/account/:username" element={<AccountPage />} />
         </Routes>
       </div>
     </Router>
