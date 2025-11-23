@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getDiscussions } from '../services/steemApi';
 import { useTranslation } from '../i18n.jsx';
+import { formatTimestampWithLocale } from '../utils/format';
 import './PostsPage.css';
 
 // Helper function to format asset objects
@@ -13,6 +14,26 @@ const formatAsset = (asset) => {
     return `${amount.toFixed(asset.precision)} ${symbol}`;
   }
   return 'N/A';
+};
+
+// Helper function to get total payout (pending or already paid)
+const getTotalPayout = (post) => {
+  // If pending payout exists and is not zero, show it
+  const pending = parseFloat(post.pending_payout_value || '0');
+  if (pending > 0) {
+    return formatAsset(post.pending_payout_value);
+  }
+
+  // Otherwise show total payout (author + curator rewards)
+  const total = parseFloat(post.total_payout_value || '0');
+  const curator = parseFloat(post.curator_payout_value || '0');
+
+  if (total + curator > 0) {
+    // Show combined payout
+    return formatAsset(post.total_payout_value);
+  }
+
+  return '$0.00';
 };
 
 function PostsPage() {
@@ -100,7 +121,7 @@ function PostsPage() {
               <div className="post-footer">
                 <div className="post-stats">
                   <span className="post-stat">
-                    💰 {formatAsset(post.pending_payout_value)}
+                    💰 {getTotalPayout(post)}
                   </span>
                   <span className="post-stat">
                     👍 {post.net_votes || 0} {t('posts.votes')}
@@ -110,7 +131,7 @@ function PostsPage() {
                   </span>
                 </div>
                 <div className="post-time">
-                  {new Date(post.created + 'Z').toLocaleString(language === 'ko' ? 'ko-KR' : language === 'ja' ? 'ja-JP' : undefined)}
+                  {formatTimestampWithLocale(post.created, language)}
                 </div>
               </div>
             </article>

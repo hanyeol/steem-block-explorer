@@ -213,46 +213,35 @@ export const getLatestPosts = async (limit = 10) => {
 
 /**
  * Get discussions by various sorting options
- * Using database_api list_comments method with by_permlink order
+ * Using tags_api which includes pending_payout_value and other metadata
  */
 export const getDiscussions = async (sortBy = 'trending', query = {}) => {
   try {
-    const limit = query.limit || 50; // Request more to filter later
+    const limit = query.limit || 20;
 
-    // Use by_permlink which only requires empty start array
-    const result = await rpcCall('database_api', 'list_comments', {
-      start: [],
-      limit,
-      order: 'by_permlink'
-    });
-
-    // Filter to get only root posts (not replies)
-    const posts = result?.comments || [];
-    const rootPosts = posts.filter(post => post.parent_author === '');
-
-    // Sort based on sortBy parameter
-    let sortedPosts = [...rootPosts];
+    // Map sortBy to tags_api method
+    let method;
     switch (sortBy) {
       case 'trending':
-        // Sort by pending payout (higher is better)
-        sortedPosts.sort((a, b) => {
-          const aValue = parseFloat(a.pending_payout_value?.amount || 0);
-          const bValue = parseFloat(b.pending_payout_value?.amount || 0);
-          return bValue - aValue;
-        });
+        method = 'get_discussions_by_trending';
         break;
       case 'created':
-        // Sort by creation time (newest first)
-        sortedPosts.sort((a, b) => new Date(b.created) - new Date(a.created));
+        method = 'get_discussions_by_created';
         break;
       case 'hot':
-        // Sort by net votes (most voted first)
-        sortedPosts.sort((a, b) => (b.net_votes || 0) - (a.net_votes || 0));
+        method = 'get_discussions_by_hot';
         break;
+      default:
+        method = 'get_discussions_by_trending';
     }
 
-    // Return only requested limit
-    return sortedPosts.slice(0, query.limit || 20);
+    const result = await rpcCall('tags_api', method, {
+      tag: query.tag || '',  // Empty tag returns all posts
+      limit,
+      truncate_body: query.truncate_body || 0  // 0 = full body
+    });
+
+    return result?.discussions || [];
   } catch (error) {
     console.error(`Failed to fetch ${sortBy} discussions:`, error);
     return [];
