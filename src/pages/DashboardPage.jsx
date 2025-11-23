@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getLatestBlockNum, getBlocks, getDynamicGlobalProperties } from '../services/steemApi';
 import BlockTable from '../components/BlockTable';
+import { useTranslation } from '../i18n.jsx';
 import './DashboardPage.css';
 
 // Helper function to format asset objects
@@ -51,6 +52,7 @@ function DashboardPage() {
     recentBlocks: [],
   });
   const [loading, setLoading] = useState(true);
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -80,18 +82,18 @@ function DashboardPage() {
   }, []);
 
   if (loading) {
-    return <div className="dashboard-loading">데이터를 불러오는 중...</div>;
+    return <div className="dashboard-loading">{t('dashboard.loading')}</div>;
   }
 
   return (
     <div className="dashboard">
-      <h1 className="dashboard-title">대시보드</h1>
+      <h1 className="dashboard-title">{t('dashboard.title')}</h1>
 
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">🧊</div>
           <div className="stat-content">
-            <div className="stat-label">최신 블록</div>
+            <div className="stat-label">{t('dashboard.stats.latestBlock')}</div>
             <div className="stat-value">{stats.headBlockNumber.toLocaleString()}</div>
           </div>
         </div>
@@ -99,7 +101,7 @@ function DashboardPage() {
         <div className="stat-card">
           <div className="stat-icon">💰</div>
           <div className="stat-content">
-            <div className="stat-label">현재 공급량</div>
+            <div className="stat-label">{t('dashboard.stats.currentSupply')}</div>
             <div className="stat-value">{stats.currentSupply}</div>
           </div>
         </div>
@@ -107,7 +109,7 @@ function DashboardPage() {
         <div className="stat-card">
           <div className="stat-icon">📊</div>
           <div className="stat-content">
-            <div className="stat-label">가상 공급량</div>
+            <div className="stat-label">{t('dashboard.stats.virtualSupply')}</div>
             <div className="stat-value">{stats.virtualSupply}</div>
           </div>
         </div>
@@ -115,7 +117,7 @@ function DashboardPage() {
         <div className="stat-card">
           <div className="stat-icon">👤</div>
           <div className="stat-content">
-            <div className="stat-label">총 베스팅 지분</div>
+            <div className="stat-label">{t('dashboard.stats.totalVesting')}</div>
             <div className="stat-value">{stats.totalAccounts}</div>
           </div>
         </div>
@@ -123,35 +125,35 @@ function DashboardPage() {
         <div className="stat-card">
           <div className="stat-icon">💲</div>
           <div className="stat-content">
-            <div className="stat-label">VESTS 가격</div>
+            <div className="stat-label">{t('dashboard.stats.steemPerVests')}</div>
             <div className="stat-value">{stats.steemPerVests} STEEM</div>
           </div>
         </div>
       </div>
 
       <div className="recent-blocks-section">
-        <h2 className="section-title">최근 블록</h2>
+        <h2 className="section-title">{t('dashboard.recentBlocks')}</h2>
         <BlockTable
           columns={[
             {
               key: 'number',
-              label: '블록 번호',
+              label: t('common.blockNumber'),
               width: '150px',
               className: 'block-number',
               render: (block) => `#${block.block_num}`,
             },
             {
               key: 'time',
-              label: '시간',
+              label: t('common.time'),
               width: '220px',
               className: 'block-time',
-              render: (block) => new Date(block.timestamp + 'Z').toLocaleString('ko-KR'),
+              render: (block) => new Date(block.timestamp + 'Z').toLocaleString(language === 'ko' ? 'ko-KR' : language === 'ja' ? 'ja-JP' : undefined),
             },
-          {
-            key: 'witness',
-            label: '증인',
-            className: 'block-witness',
-            render: (block) => (
+            {
+              key: 'witness',
+              label: t('common.witness'),
+              className: 'block-witness',
+              render: (block) => (
                 block.witness ? (
                   <span className="block-witness">{block.witness}</span>
                 ) : 'N/A'
@@ -159,7 +161,7 @@ function DashboardPage() {
             },
             {
               key: 'tx',
-              label: '트랜잭션',
+              label: t('common.transactions'),
               width: '140px',
               className: 'block-tx-count',
               render: (block) => (
@@ -171,7 +173,7 @@ function DashboardPage() {
           rowKey={(block) => block.block_id || block.block_num}
           rowLink={(block) => `/block/${block.block_num}`}
           cellLink={(col, block) => (col.key === 'witness' && block.witness ? `/account/${block.witness}` : null)}
-          emptyMessage="블록 정보가 없습니다."
+          emptyMessage={t('dashboard.emptyBlocks')}
         />
       </div>
     </div>

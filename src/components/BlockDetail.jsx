@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import DetailLayout from './DetailLayout';
+import { useTranslation } from '../i18n.jsx';
+import { formatTimestampWithLocale } from '../utils/format';
 import './BlockDetail.css';
 
 const BlockDetail = ({ blockNum, block }) => {
+  const { t, language } = useTranslation();
   // Format timestamp for display
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
-    return new Date(`${timestamp}Z`).toLocaleString();
+    return formatTimestampWithLocale(timestamp, language);
   };
 
   if (!block) {
@@ -21,7 +24,7 @@ const BlockDetail = ({ blockNum, block }) => {
   return (
     <DetailLayout
       className="block-detail"
-      title={`Block #${blockNumber.toLocaleString()}`}
+      title={`${t('common.blockNumber')} #${blockNumber.toLocaleString()}`}
       backTo="/blocks"
       actions={(
         <>
@@ -43,26 +46,26 @@ const BlockDetail = ({ blockNum, block }) => {
       )}
     >
       <div className="detail-section">
-        <h3>Block Information</h3>
+        <h3>{t('blockDetail.info')}</h3>
         <div className="detail-grid">
           <div className="detail-item">
-            <span className="label">시간:</span>
+            <span className="label">{t('blockDetail.time')}:</span>
             <span className="value">{formatTimestamp(block.timestamp)}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Witness:</span>
+            <span className="label">{t('blockDetail.witness')}:</span>
             <span className="value">{block.witness}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Transaction Count:</span>
+            <span className="label">{t('blockDetail.transactionCount')}:</span>
             <span className="value">{transactionCount}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Previous Block Hash:</span>
+            <span className="label">{t('blockDetail.prevHash')}:</span>
             <span className="value hash">{block.previous}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Transaction Merkle Root:</span>
+            <span className="label">{t('blockDetail.merkle')}:</span>
             <span className="value hash">{block.transaction_merkle_root}</span>
           </div>
         </div>
@@ -70,9 +73,9 @@ const BlockDetail = ({ blockNum, block }) => {
 
       {/* Transactions Section */}
       <div className="detail-section">
-        <h3>Transactions ({transactionCount})</h3>
+        <h3>{t('blockDetail.transactions', { count: transactionCount })}</h3>
         {!block.transactions || block.transactions.length === 0 ? (
-          <div className="empty-state">No transactions in this block</div>
+          <div className="empty-state">{t('blockDetail.noTransactions')}</div>
         ) : (
           <div className="transactions-list">
             {block.transactions.map((tx, txIndex) => (
@@ -97,7 +100,7 @@ const BlockDetail = ({ blockNum, block }) => {
 
       {/* Raw JSON Section */}
       <details className="detail-section">
-        <summary className="collapsible-header">Raw JSON Data</summary>
+        <summary className="collapsible-header">{t('blockDetail.rawJson')}</summary>
         <pre className="json-data">{JSON.stringify(block, null, 2)}</pre>
       </details>
     </DetailLayout>

@@ -1,10 +1,13 @@
 import './SkeletonLoader.css';
+import { useTranslation } from '../i18n.jsx';
 
 export const BlockListSkeleton = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="block-list">
       <div className="block-header">
-        <h2>Latest Blocks</h2>
+        <h2>{t('blockList.title')}</h2>
         <div className="latest-block-info">
           <span className="skeleton skeleton-text skeleton-latest"></span>
         </div>
@@ -13,10 +16,10 @@ export const BlockListSkeleton = () => {
       <table className="block-table">
         <thead>
           <tr>
-            <th>Block Number</th>
-            <th>시간</th>
-            <th>Transactions</th>
-            <th>Witness</th>
+            <th>{t('common.blockNumber')}</th>
+            <th>{t('common.time')}</th>
+            <th>{t('common.transactions')}</th>
+            <th>{t('common.witness')}</th>
           </tr>
         </thead>
         <tbody>

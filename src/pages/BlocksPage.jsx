@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getLatestBlockNum, getBlocks } from '../services/steemApi';
 import BlockTable from '../components/BlockTable';
+import { useTranslation } from '../i18n.jsx';
 import './BlocksPage.css';
 
 function BlocksPage() {
@@ -10,6 +11,7 @@ function BlocksPage() {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const blocksPerPage = 20;
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     const fetchBlocks = async () => {
@@ -45,31 +47,31 @@ function BlocksPage() {
   const totalPages = Math.ceil(latestBlock / blocksPerPage);
 
   if (loading) {
-    return <div className="blocks-loading">블록 데이터를 불러오는 중...</div>;
+    return <div className="blocks-loading">{t('blocksPage.loading')}</div>;
   }
 
   return (
     <div className="blocks-page">
       <div className="blocks-header">
-        <h1 className="blocks-title">블록 탐색</h1>
+        <h1 className="blocks-title">{t('blocksPage.title')}</h1>
         <form onSubmit={handleSearch} className="block-search">
           <input
             type="text"
-            placeholder="블록 번호 검색..."
+            placeholder={t('blocksPage.searchPlaceholder')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="search-input"
           />
-          <button type="submit" className="search-button">검색</button>
+          <button type="submit" className="search-button">{t('blocksPage.searchButton')}</button>
         </form>
       </div>
 
       <div className="blocks-info">
         <div className="info-badge">
-          최신 블록: <strong>#{latestBlock.toLocaleString()}</strong>
+          {t('blocksPage.infoLatest', { num: latestBlock.toLocaleString() })}
         </div>
         <div className="info-badge">
-          페이지: <strong>{currentPage} / {totalPages.toLocaleString()}</strong>
+          {t('blocksPage.infoPage', { current: currentPage, total: totalPages.toLocaleString() })}
         </div>
       </div>
 
@@ -77,34 +79,34 @@ function BlocksPage() {
         columns={[
           {
             key: 'number',
-            label: '블록 번호',
+            label: t('common.blockNumber'),
             width: '150px',
             className: 'block-number',
             render: (block) => `#${block.block_num}`,
           },
           {
             key: 'timestamp',
-            label: '시간',
+            label: t('common.time'),
             width: '220px',
             className: 'block-timestamp',
-            render: (block) => new Date(block.timestamp + 'Z').toLocaleString('ko-KR'),
+            render: (block) => new Date(block.timestamp + 'Z').toLocaleString(language === 'ko' ? 'ko-KR' : language === 'ja' ? 'ja-JP' : undefined),
           },
           {
             key: 'witness',
-            label: '증인',
+            label: t('common.witness'),
             className: 'block-witness',
             render: (block) => block.witness || 'N/A',
           },
           {
             key: 'txs',
-            label: '트랜잭션',
+            label: t('common.transactions'),
             width: '140px',
             className: 'block-tx-count',
             render: (block) => <span className="badge">{block.transactions?.length || 0}</span>,
           },
           {
             key: 'size',
-            label: '크기',
+            label: t('common.size'),
             width: '120px',
             className: 'block-size',
             render: (block) => `${(JSON.stringify(block).length / 1024).toFixed(2)} KB`,
@@ -114,7 +116,7 @@ function BlocksPage() {
         rowKey={(block) => block.block_id || block.block_num}
         rowLink={(block) => `/block/${block.block_num}`}
         cellLink={(col, block) => (col.key === 'witness' && block.witness ? `/account/${block.witness}` : null)}
-        emptyMessage="블록 정보를 불러오지 못했습니다."
+        emptyMessage={t('blocksPage.empty')}
       />
 
       <div className="pagination">
@@ -123,17 +125,17 @@ function BlocksPage() {
           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
           disabled={currentPage === 1}
         >
-          ← 이전
+          {t('blocksPage.paginationPrev')}
         </button>
         <span className="pagination-info">
-          페이지 {currentPage} / {totalPages.toLocaleString()}
+          {t('blocksPage.infoPage', { current: currentPage, total: totalPages.toLocaleString() })}
         </span>
         <button
           className="pagination-button"
           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
           disabled={currentPage === totalPages}
         >
-          다음 →
+          {t('blocksPage.paginationNext')}
         </button>
       </div>
     </div>

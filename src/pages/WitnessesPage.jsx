@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getWitnessesByVote } from '../services/steemApi';
+import { useTranslation } from '../i18n.jsx';
 import './WitnessesPage.css';
 
 // Helper function to format asset objects
@@ -17,6 +18,7 @@ const formatAsset = (asset) => {
 function WitnessesPage() {
   const [witnesses, setWitnesses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchWitnesses = async () => {
@@ -36,15 +38,15 @@ function WitnessesPage() {
   }, []);
 
   if (loading) {
-    return <div className="witnesses-loading">증인 데이터를 불러오는 중...</div>;
+    return <div className="witnesses-loading">{t('witnesses.loading')}</div>;
   }
 
   return (
     <div className="witnesses-page">
       <div className="witnesses-header">
-        <h1 className="witnesses-title">증인 목록</h1>
+        <h1 className="witnesses-title">{t('witnesses.title')}</h1>
         <div className="witnesses-info">
-          총 <strong>{witnesses.length}</strong>명의 증인
+          {t('witnesses.total', { count: witnesses.length })}
         </div>
       </div>
 
@@ -58,23 +60,23 @@ function WitnessesPage() {
               </Link>
               <div className="witness-details">
                 <div className="witness-detail-item">
-                  <span className="detail-label">투표:</span>
+                  <span className="detail-label">{t('witnesses.votes')}:</span>
                   <span className="detail-value">
                     {(parseInt(witness.votes) / 1e15).toFixed(0)} MV
                   </span>
                 </div>
                 <div className="witness-detail-item">
-                  <span className="detail-label">가격:</span>
+                  <span className="detail-label">{t('witnesses.price')}:</span>
                   <span className="detail-value">{formatAsset(witness.sbd_exchange_rate?.base)}</span>
                 </div>
                 <div className="witness-detail-item">
-                  <span className="detail-label">블록 크기:</span>
+                  <span className="detail-label">{t('witnesses.blockSize')}:</span>
                   <span className="detail-value">
                     {witness.props?.maximum_block_size?.toLocaleString() || 'N/A'} bytes
                   </span>
                 </div>
                 <div className="witness-detail-item">
-                  <span className="detail-label">계정 생성 수수료:</span>
+                  <span className="detail-label">{t('witnesses.accountCreation')}:</span>
                   <span className="detail-value">
                     {formatAsset(witness.props?.account_creation_fee)}
                   </span>
@@ -88,12 +90,12 @@ function WitnessesPage() {
                     rel="noopener noreferrer"
                     className="witness-link"
                   >
-                    🔗 웹사이트
+                    🔗 {t('witnesses.website')}
                   </a>
                 )}
               </div>
               <div className="witness-signing-key">
-                <span className="signing-key-label">서명 키:</span>
+                <span className="signing-key-label">{t('witnesses.signingKey')}:</span>
                 <code className="signing-key-value">{witness.signing_key}</code>
               </div>
             </div>

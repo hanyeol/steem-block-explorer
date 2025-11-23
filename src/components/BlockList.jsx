@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestBlockNum, getBlocks, getWitnessesByVote } from '../services/steemApi';
 import { BlockListSkeleton } from './SkeletonLoader';
+import { useTranslation } from '../i18n.jsx';
+import { formatTimestampWithLocale } from '../utils/format';
 import './BlockList.css';
 
 const BlockList = () => {
@@ -10,6 +12,7 @@ const BlockList = () => {
   const [error, setError] = useState(null);
   const [latestBlock, setLatestBlock] = useState(null);
   const [top20Witnesses, setTop20Witnesses] = useState([]);
+  const { t, language } = useTranslation();
 
   const loadBlocks = useCallback(async () => {
     try {
@@ -53,9 +56,7 @@ const BlockList = () => {
     return !top20Witnesses.includes(witnessName);
   };
 
-  const formatTimestamp = (timestamp) => {
-    return new Date(timestamp + 'Z').toLocaleString();
-  };
+  const formatTimestamp = (timestamp) => formatTimestampWithLocale(timestamp, language);
 
   if (loading) {
     return <BlockListSkeleton />;
@@ -68,19 +69,19 @@ const BlockList = () => {
   return (
     <div className="block-list">
       <div className="block-header">
-        <h2>Latest Blocks</h2>
+        <h2>{t('blockList.title')}</h2>
         <div className="latest-block-info">
-          Latest Block: <span className="highlight">{latestBlock}</span>
+          {t('common.latestBlock')}: <span className="highlight">{latestBlock}</span>
         </div>
       </div>
 
       <table className="block-table">
         <thead>
           <tr>
-            <th>Block Number</th>
-            <th>시간</th>
-            <th>Transactions</th>
-            <th>Witness</th>
+            <th>{t('common.blockNumber')}</th>
+            <th>{t('common.time')}</th>
+            <th>{t('common.transactions')}</th>
+            <th>{t('common.witness')}</th>
           </tr>
         </thead>
         <tbody>

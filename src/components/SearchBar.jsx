@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from '../i18n.jsx';
 import './SearchBar.css';
 
 const SearchBar = ({ onSearch }) => {
   const [searchValue, setSearchValue] = useState('');
+  const { t } = useTranslation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,13 +18,13 @@ const SearchBar = ({ onSearch }) => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Search by block number or account..."
+          placeholder={t('searchBar.placeholder')}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           className="search-input"
         />
         <button type="submit" className="search-button">
-          Search
+          {t('searchBar.button')}
         </button>
       </form>
     </div>

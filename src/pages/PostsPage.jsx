@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getDiscussions } from '../services/steemApi';
+import { useTranslation } from '../i18n.jsx';
 import './PostsPage.css';
 
 // Helper function to format asset objects
@@ -18,6 +19,7 @@ function PostsPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('trending');
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -36,31 +38,31 @@ function PostsPage() {
   }, [sortBy]);
 
   if (loading) {
-    return <div className="posts-loading">포스트 데이터를 불러오는 중...</div>;
+    return <div className="posts-loading">{t('posts.loading')}</div>;
   }
 
   return (
     <div className="posts-page">
       <div className="posts-header">
-        <h1 className="posts-title">포스트</h1>
+        <h1 className="posts-title">{t('posts.title')}</h1>
         <div className="sort-buttons">
           <button
             className={`sort-button ${sortBy === 'trending' ? 'active' : ''}`}
             onClick={() => setSortBy('trending')}
           >
-            🔥 트렌딩
+            🔥 {t('posts.trending')}
           </button>
           <button
             className={`sort-button ${sortBy === 'created' ? 'active' : ''}`}
             onClick={() => setSortBy('created')}
           >
-            🆕 최신
+            🆕 {t('posts.latest')}
           </button>
           <button
             className={`sort-button ${sortBy === 'hot' ? 'active' : ''}`}
             onClick={() => setSortBy('hot')}
           >
-            ⚡ 인기
+            ⚡ {t('posts.hot')}
           </button>
         </div>
       </div>
@@ -68,7 +70,7 @@ function PostsPage() {
       <div className="posts-list">
         {posts.length === 0 ? (
           <div className="no-posts">
-            <p>현재 체인에 포스트가 없습니다.</p>
+            <p>{t('posts.empty')}</p>
           </div>
         ) : (
           posts.filter(post => post && post.author && post.permlink).map((post) => (
@@ -101,14 +103,14 @@ function PostsPage() {
                     💰 {formatAsset(post.pending_payout_value)}
                   </span>
                   <span className="post-stat">
-                    👍 {post.net_votes || 0} votes
+                    👍 {post.net_votes || 0} {t('posts.votes')}
                   </span>
                   <span className="post-stat">
-                    💬 {post.children || 0} replies
+                    💬 {post.children || 0} {t('posts.replies')}
                   </span>
                 </div>
                 <div className="post-time">
-                  {new Date(post.created + 'Z').toLocaleString('ko-KR')}
+                  {new Date(post.created + 'Z').toLocaleString(language === 'ko' ? 'ko-KR' : language === 'ja' ? 'ja-JP' : undefined)}
                 </div>
               </div>
             </article>
