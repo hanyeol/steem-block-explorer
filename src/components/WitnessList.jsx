@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getWitnessesByVote } from '../services/steemApi';
 import './WitnessList.css';
@@ -8,11 +8,7 @@ const WitnessList = ({ limit = 20 }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadWitnesses();
-  }, [limit]);
-
-  const loadWitnesses = async () => {
+  const loadWitnesses = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -24,7 +20,11 @@ const WitnessList = ({ limit = 20 }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit]);
+
+  useEffect(() => {
+    loadWitnesses();
+  }, [loadWitnesses]);
 
   const formatVotes = (votes) => {
     // Convert VESTS to more readable format (millions)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestBlockNum, getBlocks, getWitnessesByVote } from '../services/steemApi';
 import { BlockListSkeleton } from './SkeletonLoader';
@@ -11,15 +11,7 @@ const BlockList = () => {
   const [latestBlock, setLatestBlock] = useState(null);
   const [top20Witnesses, setTop20Witnesses] = useState([]);
 
-  useEffect(() => {
-    loadBlocks();
-    loadTop20Witnesses();
-    // Refresh every 3 seconds (Steem block time)
-    const interval = setInterval(loadBlocks, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadBlocks = async () => {
+  const loadBlocks = useCallback(async () => {
     try {
       const latest = await getLatestBlockNum();
       setLatestBlock(latest);
@@ -30,9 +22,9 @@ const BlockList = () => {
       setError(err.message);
       setLoading(false);
     }
-  };
+  }, []);
 
-  const loadTop20Witnesses = async () => {
+  const loadTop20Witnesses = useCallback(async () => {
     try {
       const witnesses = await getWitnessesByVote(20);
       const witnessNames = witnesses.map(w => w.owner);
@@ -40,7 +32,18 @@ const BlockList = () => {
     } catch (err) {
       console.error('Failed to load top 20 witnesses:', err);
     }
-  };
+  }, []);
+
+  // Fetch blocks and witness list on mount and keep refreshing
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    loadBlocks();
+    loadTop20Witnesses();
+    // Refresh every 3 seconds (Steem block time)
+    const interval = setInterval(loadBlocks, 3000);
+    return () => clearInterval(interval);
+  }, [loadBlocks, loadTop20Witnesses]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const isTimeshareWitness = (witnessName) => {
     // Only check if top20Witnesses is loaded
@@ -75,7 +78,7 @@ const BlockList = () => {
         <thead>
           <tr>
             <th>Block Number</th>
-            <th>Timestamp</th>
+            <th>시간</th>
             <th>Transactions</th>
             <th>Witness</th>
           </tr>

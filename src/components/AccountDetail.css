@@ -1,182 +1,55 @@
-.account-detail {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+/* Account Detail Specific Styles */
+
+/* Navigation Actions */
+.account-detail .navigation-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.account-header {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+.account-detail .reputation-badge {
+  background: var(--primary-color);
   color: white;
-  padding: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.account-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.account-title h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 600;
-}
-
-.account-detail .account-header .back-button {
-  background: #ffffff;
-  color: var(--primary-color);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-.account-detail .account-header .back-button:hover {
-  background: #f0f0f0;
-  color: var(--primary-color);
-  transform: translateX(-2px);
-}
-
-.reputation-badge {
-  background: rgba(255, 255, 255, 0.2);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
-.detail-section {
-  padding: 2rem;
-  border-bottom: 1px solid #eee;
-}
-
-.detail-section:last-child {
-  border-bottom: none;
-}
-
-.detail-section h2 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.detail-item.full-width {
-  grid-column: 1 / -1;
-}
-
-.detail-item .label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.detail-item .value {
-  font-size: 1rem;
-  color: var(--text-primary);
-  word-break: break-word;
-}
-
-.detail-item .value a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.detail-item .value a:hover {
-  text-decoration: underline;
-}
-
-.account-link {
+/* Links */
+.account-detail .internal-link {
   color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
-.account-link:hover {
+.account-detail .internal-link:hover {
   color: var(--primary-hover);
   text-decoration: underline;
 }
 
-.memo-key {
-  font-family: monospace;
-  font-size: 0.875rem;
-  background: #f5f5f5;
-  padding: 0.5rem;
-  border-radius: 4px;
-  word-break: break-all;
-}
-
-.raw-json {
-  cursor: pointer;
-}
-
-.raw-json summary {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding: 0.5rem 0;
-  user-select: none;
-}
-
-.raw-json summary:hover {
+.account-detail .external-link {
   color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-.raw-json pre {
-  background: #f5f5f5;
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-size: 0.875rem;
-  margin-top: 1rem;
+.account-detail .external-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .account-header {
-    padding: 1.5rem 1rem;
-  }
-
-  .account-title {
+  .account-detail .navigation-actions {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
     width: 100%;
   }
 
-  .account-title h1 {
-    font-size: 1.5rem;
-  }
-
-  .detail-section {
-    padding: 1.5rem 1rem;
-  }
-
-  .detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .detail-section h2 {
-    font-size: 1.25rem;
+  .account-detail .reputation-badge {
+    width: 100%;
+    text-align: center;
   }
 }

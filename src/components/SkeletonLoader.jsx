@@ -14,7 +14,7 @@ export const BlockListSkeleton = () => {
         <thead>
           <tr>
             <th>Block Number</th>
-            <th>Timestamp</th>
+            <th>시간</th>
             <th>Transactions</th>
             <th>Witness</th>
           </tr>
@@ -44,10 +44,10 @@ export const BlockListSkeleton = () => {
 
 export const BlockDetailSkeleton = () => {
   return (
-    <div className="block-detail">
+    <div className="detail-page block-detail">
       <div className="navigation">
         <span className="skeleton skeleton-text skeleton-back-button"></span>
-        <div className="block-navigation">
+        <div className="navigation-actions">
           <span className="skeleton skeleton-text skeleton-nav-button"></span>
           <span className="skeleton skeleton-text skeleton-nav-button"></span>
         </div>

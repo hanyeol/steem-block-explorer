@@ -1,20 +1,19 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import DetailLayout from './DetailLayout';
 import './AccountDetail.css';
 
 const AccountDetail = ({ account }) => {
-  const navigate = useNavigate();
-
   if (!account) return null;
 
   // Parse JSON metadata safely
   let metadata = {};
   try {
     metadata = account.json_metadata ? JSON.parse(account.json_metadata) : {};
-  } catch (e) {
+  } catch {
     metadata = {};
   }
 
-  // Format dates
+  // Format dates for display
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString();
   };
@@ -62,37 +61,35 @@ const AccountDetail = ({ account }) => {
   const reputation = calculateReputation(account.reputation);
 
   return (
-    <div className="account-detail">
-      <div className="account-header">
-        <div className="account-title">
-          <button onClick={() => navigate(-1)} className="back-button">
-            ← Back
-          </button>
-          <h1>@{account.name}</h1>
-        </div>
+    <DetailLayout
+      className="account-detail"
+      title={`@${account.name}`}
+      backTo="/"
+      actions={(
         <div className="reputation-badge">
           Reputation: {reputation}
         </div>
-      </div>
-
-      {/* Profile Section */}
+      )}
+    >
       <div className="detail-section">
-        <h2>Profile</h2>
+        <h3>Profile Information</h3>
         <div className="detail-grid">
           <div className="detail-item">
-            <span className="label">ID:</span>
+            <span className="label">Account ID:</span>
             <span className="value">{account.id}</span>
+          </div>
+          <div className="detail-item">
+            <span className="label">Created Date:</span>
+            <span className="value">{formatDate(account.created)}</span>
+          </div>
+          <div className="detail-item">
+            <span className="label">Last Active:</span>
+            <span className="value">{formatDate(account.last_post)}</span>
           </div>
           {metadata.profile?.name && (
             <div className="detail-item">
-              <span className="label">Name:</span>
+              <span className="label">Display Name:</span>
               <span className="value">{metadata.profile.name}</span>
-            </div>
-          )}
-          {metadata.profile?.about && (
-            <div className="detail-item full-width">
-              <span className="label">About:</span>
-              <span className="value">{metadata.profile.about}</span>
             </div>
           )}
           {metadata.profile?.location && (
@@ -105,29 +102,27 @@ const AccountDetail = ({ account }) => {
             <div className="detail-item">
               <span className="label">Website:</span>
               <span className="value">
-                <a href={metadata.profile.website} target="_blank" rel="noopener noreferrer">
+                <a href={metadata.profile.website} target="_blank" rel="noopener noreferrer" className="external-link">
                   {metadata.profile.website}
                 </a>
               </span>
             </div>
           )}
-          <div className="detail-item">
-            <span className="label">Created:</span>
-            <span className="value">{formatDate(account.created)}</span>
-          </div>
-          <div className="detail-item">
-            <span className="label">Last Active:</span>
-            <span className="value">{formatDate(account.last_post)}</span>
-          </div>
+          {metadata.profile?.about && (
+            <div className="detail-item full-width">
+              <span className="label">About:</span>
+              <span className="value">{metadata.profile.about}</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Balances Section */}
       <div className="detail-section">
-        <h2>Balances</h2>
+        <h3>Account Balances</h3>
         <div className="detail-grid">
           <div className="detail-item">
-            <span className="label">STEEM:</span>
+            <span className="label">STEEM Balance:</span>
             <span className="value">{formatToken(account.balance)}</span>
           </div>
           <div className="detail-item">
@@ -135,7 +130,7 @@ const AccountDetail = ({ account }) => {
             <span className="value">{formatToken(account.vesting_shares)}</span>
           </div>
           <div className="detail-item">
-            <span className="label">SBD:</span>
+            <span className="label">SBD Balance:</span>
             <span className="value">{formatToken(account.sbd_balance)}</span>
           </div>
           <div className="detail-item">
@@ -147,23 +142,23 @@ const AccountDetail = ({ account }) => {
             <span className="value">{formatToken(account.savings_sbd_balance)}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Reward STEEM:</span>
+            <span className="label">Pending STEEM Rewards:</span>
             <span className="value">{formatToken(account.reward_steem_balance)}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Reward SBD:</span>
+            <span className="label">Pending SBD Rewards:</span>
             <span className="value">{formatToken(account.reward_sbd_balance)}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Reward SP:</span>
+            <span className="label">Pending SP Rewards:</span>
             <span className="value">{formatToken(account.reward_vesting_balance)}</span>
           </div>
         </div>
       </div>
 
-      {/* Activity Stats Section */}
+      {/* Activity Section */}
       <div className="detail-section">
-        <h2>Activity</h2>
+        <h3>Activity Statistics</h3>
         <div className="detail-grid">
           <div className="detail-item">
             <span className="label">Post Count:</span>
@@ -174,56 +169,52 @@ const AccountDetail = ({ account }) => {
             <span className="value">{votingPower}%</span>
           </div>
           <div className="detail-item">
-            <span className="label">Following:</span>
+            <span className="label">Following Count:</span>
             <span className="value">{account.following_count?.toLocaleString() || 0}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Followers:</span>
+            <span className="label">Followers Count:</span>
             <span className="value">{account.follower_count?.toLocaleString() || 0}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Witness Votes:</span>
+            <span className="label">Witness Votes Cast:</span>
             <span className="value">{account.witnesses_voted_for || 0}</span>
           </div>
           <div className="detail-item">
-            <span className="label">Proxy:</span>
+            <span className="label">Voting Proxy:</span>
             <span className="value">{account.proxy || 'None'}</span>
           </div>
         </div>
       </div>
 
-      {/* Recovery & Keys Section */}
+      {/* Security Section */}
       <div className="detail-section">
-        <h2>Security</h2>
+        <h3>Security Information</h3>
         <div className="detail-grid">
           <div className="detail-item">
             <span className="label">Recovery Account:</span>
             <span className="value">
-              <a
-                href={`/account/${account.recovery_account}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/account/${account.recovery_account}`);
-                }}
-                className="account-link"
+              <Link
+                to={`/account/${account.recovery_account}`}
+                className="internal-link"
               >
                 @{account.recovery_account}
-              </a>
+              </Link>
             </span>
           </div>
-          <div className="detail-item">
-            <span className="label">Memo Key:</span>
-            <span className="value memo-key">{account.memo_key}</span>
+          <div className="detail-item full-width">
+            <span className="label">Memo Public Key:</span>
+            <span className="value hash">{account.memo_key}</span>
           </div>
         </div>
       </div>
 
-      {/* Raw JSON Section (collapsible) */}
-      <details className="detail-section raw-json">
-        <summary>Raw JSON Data</summary>
-        <pre>{JSON.stringify(account, null, 2)}</pre>
+      {/* Raw JSON Section */}
+      <details className="detail-section">
+        <summary className="collapsible-header">Raw JSON Data</summary>
+        <pre className="json-data">{JSON.stringify(account, null, 2)}</pre>
       </details>
-    </div>
+    </DetailLayout>
   );
 };
 

@@ -1,0 +1,95 @@
+.blocks-table {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.blocks-table .table-header {
+  display: grid;
+  grid-template-columns: var(--block-table-template, repeat(4, 1fr));
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.blocks-table .table-row {
+  display: grid;
+  grid-template-columns: var(--block-table-template, repeat(4, 1fr));
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.blocks-table .table-row:hover {
+  background: #f8f9fa;
+}
+
+.blocks-table .table-row:last-child {
+  border-bottom: none;
+}
+
+.blocks-table .block-number {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 1.05rem;
+}
+
+.blocks-table .block-timestamp,
+.blocks-table .block-time,
+.blocks-table .block-size {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.blocks-table .block-witness {
+  color: #1a1f36;
+  font-weight: 500;
+}
+
+.blocks-table .block-tx-count {
+  text-align: center;
+}
+
+.blocks-table .block-size {
+  text-align: right;
+}
+
+.blocks-table .badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.blocks-table .table-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .blocks-table .table-header {
+    display: none;
+  }
+
+  .blocks-table .table-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .blocks-table .block-size,
+  .blocks-table .block-tx-count {
+    text-align: left;
+  }
+}

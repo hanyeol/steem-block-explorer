@@ -83,19 +83,38 @@ export const getBlocks = async (startBlock, count = 20) => {
   try {
     const promises = [];
     for (let i = 0; i < count; i++) {
-      promises.push(getBlock(startBlock - i));
+      promises.push(getBlock(startBlock + i));
     }
     const blocks = await Promise.all(promises);
-    return blocks
+
+    const result = blocks
       .filter(block => block !== null && block !== undefined)
-      .map(block => {
+      .map((block, index) => {
         // Handle different response formats
+        let blockData;
         if (block.block) {
-          return block.block;
+          // API returns {block: {...}}
+          blockData = { ...block.block };
+        } else {
+          // API returns flat block object
+          blockData = { ...block };
         }
-        return block;
+
+        // Add block_num if it doesn't exist
+        if (!blockData.block_num) {
+          blockData.block_num = startBlock + index;
+        }
+
+        // Generate block_id if it doesn't exist
+        if (!blockData.block_id) {
+          blockData.block_id = `block_${startBlock + index}`;
+        }
+
+        return blockData;
       })
       .filter(block => block && block.timestamp);
+
+    return result;
   } catch (error) {
     console.error('Failed to fetch blocks:', error);
     return [];
@@ -188,6 +207,54 @@ export const getLatestPosts = async (limit = 10) => {
     return result.comments || [];
   } catch (error) {
     console.error('Failed to fetch posts:', error);
+    return [];
+  }
+};
+
+/**
+ * Get discussions by various sorting options
+ * Using database_api list_comments method with by_permlink order
+ */
+export const getDiscussions = async (sortBy = 'trending', query = {}) => {
+  try {
+    const limit = query.limit || 50; // Request more to filter later
+
+    // Use by_permlink which only requires empty start array
+    const result = await rpcCall('database_api', 'list_comments', {
+      start: [],
+      limit,
+      order: 'by_permlink'
+    });
+
+    // Filter to get only root posts (not replies)
+    const posts = result?.comments || [];
+    const rootPosts = posts.filter(post => post.parent_author === '');
+
+    // Sort based on sortBy parameter
+    let sortedPosts = [...rootPosts];
+    switch (sortBy) {
+      case 'trending':
+        // Sort by pending payout (higher is better)
+        sortedPosts.sort((a, b) => {
+          const aValue = parseFloat(a.pending_payout_value?.amount || 0);
+          const bValue = parseFloat(b.pending_payout_value?.amount || 0);
+          return bValue - aValue;
+        });
+        break;
+      case 'created':
+        // Sort by creation time (newest first)
+        sortedPosts.sort((a, b) => new Date(b.created) - new Date(a.created));
+        break;
+      case 'hot':
+        // Sort by net votes (most voted first)
+        sortedPosts.sort((a, b) => (b.net_votes || 0) - (a.net_votes || 0));
+        break;
+    }
+
+    // Return only requested limit
+    return sortedPosts.slice(0, query.limit || 20);
+  } catch (error) {
+    console.error(`Failed to fetch ${sortBy} discussions:`, error);
     return [];
   }
 };

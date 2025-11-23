@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { getAccount } from '../services/steemApi';
 import AccountDetail from '../components/AccountDetail';
-import './AccountPage.css';
+import DetailLayout from '../components/DetailLayout';
 
 const AccountPage = () => {
   const { username } = useParams();
-  const navigate = useNavigate();
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hasLoaded = useRef(false);
 
   useEffect(() => {
     const fetchAccount = async () => {
       if (!username) return;
 
       // Don't show loading on refresh (only on initial load)
-      if (!account) {
+      if (!hasLoaded.current) {
         setLoading(true);
       }
       setError(null);
@@ -34,9 +34,11 @@ const AccountPage = () => {
         setAccount(null);
       } finally {
         setLoading(false);
+        hasLoaded.current = true;
       }
     };
 
+    hasLoaded.current = false;
     fetchAccount();
 
     // Refresh every 10 seconds
@@ -47,29 +49,35 @@ const AccountPage = () => {
 
   if (loading) {
     return (
-      <div className="account-page">
+      <DetailLayout
+        className="account-detail"
+        title={username ? `@${username}` : 'Account'}
+        backTo="/"
+      >
         <div className="loading">Loading account...</div>
-      </div>
+      </DetailLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="account-page">
+      <DetailLayout
+        className="account-detail"
+        title={username ? `@${username}` : 'Account'}
+        backTo="/"
+      >
         <div className="error-container">
           <p className="error">{error}</p>
-          <button onClick={() => navigate('/')} className="back-button">
+          <Link to="/" className="back-button">
             Back to Home
-          </button>
+          </Link>
         </div>
-      </div>
+      </DetailLayout>
     );
   }
 
   return (
-    <div className="account-page">
-      <AccountDetail account={account} />
-    </div>
+    <AccountDetail account={account} />
   );
 };
 
