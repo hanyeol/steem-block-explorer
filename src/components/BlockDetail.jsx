@@ -85,12 +85,17 @@ const BlockDetail = ({ blockNum, block }) => {
                   <span className="transaction-meta">{tx.operations?.length || 0} operations</span>
                 </div>
                 <div className="operations-list">
-                  {tx.operations?.map((op, opIndex) => (
-                    <div key={opIndex} className="operation-item">
-                      <div className="operation-type">{op[0]}</div>
-                      <pre className="operation-data">{JSON.stringify(op[1], null, 2)}</pre>
-                    </div>
-                  )) || <div className="empty-state">No operations</div>}
+                  {tx.operations?.map((op, opIndex) => {
+                    // Support both old format [type, value] and new format {type, value}
+                    const opType = Array.isArray(op) ? op[0] : op.type;
+                    const opValue = Array.isArray(op) ? op[1] : op.value;
+                    return (
+                      <div key={opIndex} className="operation-item">
+                        <div className="operation-type">{opType}</div>
+                        <pre className="operation-data">{JSON.stringify(opValue, null, 2)}</pre>
+                      </div>
+                    );
+                  }) || <div className="empty-state">No operations</div>}
                 </div>
               </div>
             ))}
