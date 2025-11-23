@@ -1,6 +1,7 @@
 // Steem RPC API endpoints
 const RPC_NODES = [
-  '/rpc',
+  'https://api.steemit.com',
+  'https://api.steemitstage.com',
 ];
 
 let currentNodeIndex = 0;
@@ -219,29 +220,47 @@ export const getDiscussions = async (sortBy = 'trending', query = {}) => {
   try {
     const limit = query.limit || 20;
 
-    // Map sortBy to tags_api method
+    // Map sortBy to tags_api method name (full method name including prefix)
     let method;
     switch (sortBy) {
       case 'trending':
-        method = 'get_discussions_by_trending';
+        method = 'tags_api.get_discussions_by_trending';
         break;
       case 'created':
-        method = 'get_discussions_by_created';
+        method = 'tags_api.get_discussions_by_created';
         break;
       case 'hot':
-        method = 'get_discussions_by_hot';
+        method = 'tags_api.get_discussions_by_hot';
         break;
       default:
-        method = 'get_discussions_by_trending';
+        method = 'tags_api.get_discussions_by_trending';
     }
 
-    const result = await rpcCall('tags_api', method, {
-      tag: query.tag || '',  // Empty tag returns all posts
-      limit,
-      truncate_body: query.truncate_body || 0  // 0 = full body
+    // Use direct method call format for tags_api
+    const response = await fetch(RPC_NODES[currentNodeIndex], {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: method,
+        params: {
+          tag: query.tag || 'steem',
+          limit,
+          truncate_body: query.truncate_body || 0
+        },
+        id: 1,
+      }),
     });
 
-    return result?.discussions || [];
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+
+    return data.result?.discussions || data.result || [];
   } catch (error) {
     console.error(`Failed to fetch ${sortBy} discussions:`, error);
     return [];
