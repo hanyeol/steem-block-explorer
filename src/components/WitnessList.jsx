@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getWitnessesByVote } from '../services/steemApi';
 import './WitnessList.css';
 
@@ -27,6 +28,7 @@ const WitnessList = ({ limit = 20 }) => {
 
   const formatVotes = (votes) => {
     // Convert VESTS to more readable format (millions)
+    if (!votes || votes === 0) return '0.00M';
     const votesMillion = (parseInt(votes) / 1000000000000).toFixed(2);
     return `${votesMillion}M`;
   };
@@ -58,6 +60,17 @@ const WitnessList = ({ limit = 20 }) => {
     );
   }
 
+  if (witnesses.length === 0) {
+    return (
+      <div className="witness-list">
+        <div className="witness-list-header">
+          <h2>Top Witnesses</h2>
+        </div>
+        <div className="info">No witnesses found.</div>
+      </div>
+    );
+  }
+
   return (
     <div className="witness-list">
       <div className="witness-list-header">
@@ -80,11 +93,9 @@ const WitnessList = ({ limit = 20 }) => {
           <div key={witness.owner} className="witness-row">
             <div className="witness-rank">#{index + 1}</div>
             <div className="witness-name">
-              <a href={`https://steemit.com/@${witness.owner}`}
-                 target="_blank"
-                 rel="noopener noreferrer">
+              <Link to={`/account/${witness.owner}`}>
                 {witness.owner}
-              </a>
+              </Link>
             </div>
             <div className="witness-votes">{formatVotes(witness.votes)}</div>
             <div className="witness-status">

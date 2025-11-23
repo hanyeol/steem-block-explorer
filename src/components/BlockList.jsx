@@ -89,7 +89,7 @@ const BlockList = () => {
                 </Link>
               </td>
               <td>{formatTimestamp(block.timestamp)}</td>
-              <td>{block.transactions.length}</td>
+              <td>{block.transactions?.length || 0}</td>
               <td className="witness">
                 <Link to={`/account/${block.witness}`} className="witness-link">
                   {block.witness}

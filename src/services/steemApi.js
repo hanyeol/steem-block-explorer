@@ -1,15 +1,14 @@
 // Steem RPC API endpoints
 const RPC_NODES = [
-  'https://api.steemit.com',
-  'https://api.steemitstage.com',
+  '/rpc',
 ];
 
 let currentNodeIndex = 0;
 
 /**
- * Make RPC call to Steem API
+ * Make RPC call to Steem API using the new call format
  */
-const rpcCall = async (method, params = []) => {
+const rpcCall = async (api, method, params = {}) => {
   const node = RPC_NODES[currentNodeIndex];
 
   try {
@@ -20,8 +19,8 @@ const rpcCall = async (method, params = []) => {
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
-        method,
-        params,
+        method: 'call',
+        params: [api, method, params],
         id: 1,
       }),
     });
@@ -44,80 +43,151 @@ const rpcCall = async (method, params = []) => {
  * Get dynamic global properties (includes latest block number)
  */
 export const getDynamicGlobalProperties = async () => {
-  return await rpcCall('condenser_api.get_dynamic_global_properties');
+  try {
+    return await rpcCall('database_api', 'get_dynamic_global_properties', {});
+  } catch (error) {
+    console.error('Failed to fetch dynamic global properties:', error);
+    throw error;
+  }
 };
 
 /**
  * Get latest block number
  */
 export const getLatestBlockNum = async () => {
-  const props = await getDynamicGlobalProperties();
-  return props.head_block_number;
+  try {
+    const props = await getDynamicGlobalProperties();
+    return props.head_block_number;
+  } catch (error) {
+    console.error('Failed to fetch latest block number:', error);
+    throw error;
+  }
 };
 
 /**
  * Get block information by block number
  */
 export const getBlock = async (blockNum) => {
-  return await rpcCall('condenser_api.get_block', [blockNum]);
+  try {
+    return await rpcCall('block_api', 'get_block', { block_num: blockNum });
+  } catch (error) {
+    console.error(`Failed to fetch block ${blockNum}:`, error);
+    return null;
+  }
 };
 
 /**
  * Get multiple blocks
  */
 export const getBlocks = async (startBlock, count = 20) => {
-  const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(getBlock(startBlock - i));
+  try {
+    const promises = [];
+    for (let i = 0; i < count; i++) {
+      promises.push(getBlock(startBlock - i));
+    }
+    const blocks = await Promise.all(promises);
+    return blocks
+      .filter(block => block !== null && block !== undefined)
+      .map(block => {
+        // Handle different response formats
+        if (block.block) {
+          return block.block;
+        }
+        return block;
+      })
+      .filter(block => block && block.timestamp);
+  } catch (error) {
+    console.error('Failed to fetch blocks:', error);
+    return [];
   }
-  const blocks = await Promise.all(promises);
-  return blocks.filter(block => block !== null);
 };
 
 /**
  * Get account information
  */
 export const getAccount = async (username) => {
-  const accounts = await rpcCall('condenser_api.get_accounts', [[username]]);
-  return accounts[0] || null;
+  try {
+    const result = await rpcCall('database_api', 'find_accounts', { accounts: [username] });
+    return result.accounts?.[0] || null;
+  } catch (error) {
+    console.error(`Failed to fetch account ${username}:`, error);
+    return null;
+  }
 };
 
 /**
  * Get transaction from block
  */
 export const getTransaction = async (blockNum, txIndex) => {
-  const block = await getBlock(blockNum);
-  return block?.transactions[txIndex] || null;
+  try {
+    const result = await getBlock(blockNum);
+    return result?.block?.transactions[txIndex] || null;
+  } catch (error) {
+    console.error(`Failed to fetch transaction ${txIndex} from block ${blockNum}:`, error);
+    return null;
+  }
 };
 
 /**
  * Get witness schedule (active witnesses)
  */
 export const getWitnessSchedule = async () => {
-  return await rpcCall('condenser_api.get_witness_schedule');
+  try {
+    return await rpcCall('database_api', 'get_witness_schedule', {});
+  } catch (error) {
+    console.error('Failed to fetch witness schedule:', error);
+    throw error;
+  }
 };
 
 /**
  * Get witnesses by vote (top witnesses)
  */
 export const getWitnessesByVote = async (limit = 100) => {
-  return await rpcCall('condenser_api.get_witnesses_by_vote', ['', limit]);
+  try {
+    // First get active witness names
+    const activeResult = await rpcCall('database_api', 'get_active_witnesses', {});
+    const witnessNames = activeResult.witnesses.filter(w => w).slice(0, limit);
+
+    // Then get detailed info for each witness
+    const detailResult = await rpcCall('database_api', 'find_witnesses', {
+      owners: witnessNames
+    });
+
+    return detailResult.witnesses || [];
+  } catch (error) {
+    console.error('Failed to fetch witnesses by vote:', error);
+    return [];
+  }
 };
 
 /**
  * Get active witnesses (currently producing blocks)
  */
 export const getActiveWitnesses = async () => {
-  const schedule = await getWitnessSchedule();
-  return schedule.current_shuffled_witnesses || [];
+  try {
+    const result = await rpcCall('database_api', 'get_active_witnesses', {});
+    return result.witnesses.filter(w => w);
+  } catch (error) {
+    console.error('Failed to fetch active witnesses:', error);
+    return [];
+  }
 };
 
 /**
  * Get discussions by created (latest posts)
+ * Note: Using list_comments with database_api
  */
 export const getLatestPosts = async (limit = 10) => {
-  return await rpcCall('condenser_api.get_discussions_by_created', [{
-    tag: '',
-    limit
-  }]);
+  try {
+    const result = await rpcCall('database_api', 'list_comments', {
+      start: [],
+      limit,
+      order: 'by_permlink'
+    });
+    return result.comments || [];
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    return [];
+  }
 };

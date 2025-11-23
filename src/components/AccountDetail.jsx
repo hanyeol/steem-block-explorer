@@ -20,12 +20,29 @@ const AccountDetail = ({ account }) => {
   };
 
   // Format STEEM token amounts
-  const formatToken = (amount) => {
-    if (!amount) return '0';
-    return parseFloat(amount).toLocaleString(undefined, {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    });
+  const formatToken = (tokenData) => {
+    if (!tokenData) return '0.000';
+
+    // Handle new format: {amount: "0", precision: 3, nai: "..."}
+    if (typeof tokenData === 'object' && tokenData.amount !== undefined) {
+      const amount = parseInt(tokenData.amount);
+      const precision = tokenData.precision || 3;
+      const value = amount / Math.pow(10, precision);
+      return value.toLocaleString(undefined, {
+        minimumFractionDigits: precision,
+        maximumFractionDigits: precision,
+      });
+    }
+
+    // Handle old format: "123.456 STEEM"
+    if (typeof tokenData === 'string') {
+      return parseFloat(tokenData).toLocaleString(undefined, {
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3,
+      });
+    }
+
+    return '0.000';
   };
 
   // Calculate voting power percentage

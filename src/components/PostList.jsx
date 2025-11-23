@@ -66,6 +66,15 @@ const PostList = ({ limit = 10 }) => {
     );
   }
 
+  if (posts.length === 0) {
+    return (
+      <div className="post-list">
+        <h2>Latest Posts</h2>
+        <div className="info">No posts found on this blockchain yet.</div>
+      </div>
+    );
+  }
+
   return (
     <div className="post-list">
       <h2>Latest Posts</h2>

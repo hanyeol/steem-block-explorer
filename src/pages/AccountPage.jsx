@@ -15,7 +15,10 @@ const AccountPage = () => {
     const fetchAccount = async () => {
       if (!username) return;
 
-      setLoading(true);
+      // Don't show loading on refresh (only on initial load)
+      if (!account) {
+        setLoading(true);
+      }
       setError(null);
 
       try {
@@ -35,6 +38,11 @@ const AccountPage = () => {
     };
 
     fetchAccount();
+
+    // Refresh every 10 seconds
+    const interval = setInterval(fetchAccount, 10000);
+
+    return () => clearInterval(interval);
   }, [username]);
 
   if (loading) {
