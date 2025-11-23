@@ -46,7 +46,12 @@ function Sidebar() {
             aria-haspopup="listbox"
             aria-expanded={isLangOpen}
           >
-            <span className="lang-prefix">🌐</span>
+            <span className="lang-prefix">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20a14.5 14.5 0 0 0 0-20M2 12h20"/>
+              </svg>
+            </span>
             <span className="lang-current">
               {supportedLanguages.find((l) => l.code === language)?.label || language}
             </span>
