@@ -50,17 +50,18 @@
 
 .search-button {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
+  background: #f1f5f9;
+  border: 1px solid #d7dde5;
   border-radius: 8px;
-  color: white;
-  font-size: 1.2rem;
+  color: #1a1f36;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .search-button:hover {
-  transform: scale(1.05);
+  background: #e3e8ef;
+  border-color: #c1c8d4;
 }
 
 .blocks-info {

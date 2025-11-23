@@ -60,7 +60,7 @@ function BlocksPage() {
             onChange={(e) => setSearchInput(e.target.value)}
             className="search-input"
           />
-          <button type="submit" className="search-button">🔍</button>
+          <button type="submit" className="search-button">검색</button>
         </form>
       </div>
 
