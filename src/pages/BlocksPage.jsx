@@ -68,7 +68,7 @@ function BlocksPage() {
 
       <div className="blocks-info">
         <div className="info-badge">
-          {t('blocksPage.infoLatest', { num: latestBlock.toLocaleString() })}
+          {t('blocksPage.infoLatest', { num: latestBlock })}
         </div>
         <div className="info-badge">
           {t('blocksPage.infoPage', { current: currentPage, total: totalPages.toLocaleString() })}
