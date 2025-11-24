@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { TrendingUp, Clock, Flame, DollarSign, ThumbsUp, MessageCircle } from 'lucide-react';
 import { getDiscussions } from '../services/steemApi';
 import { useTranslation } from '../i18n.jsx';
 import { formatTimestampWithLocale } from '../utils/format';
@@ -103,19 +104,19 @@ function PostsPage() {
             className={`sort-button ${sortBy === 'trending' ? 'active' : ''}`}
             onClick={() => setSortBy('trending')}
           >
-            🔥 {t('posts.trending')}
+            <TrendingUp size={18} strokeWidth={2} /> {t('posts.trending')}
           </button>
           <button
             className={`sort-button ${sortBy === 'created' ? 'active' : ''}`}
             onClick={() => setSortBy('created')}
           >
-            🆕 {t('posts.latest')}
+            <Clock size={18} strokeWidth={2} /> {t('posts.latest')}
           </button>
           <button
             className={`sort-button ${sortBy === 'hot' ? 'active' : ''}`}
             onClick={() => setSortBy('hot')}
           >
-            ⚡ {t('posts.hot')}
+            <Flame size={18} strokeWidth={2} /> {t('posts.hot')}
           </button>
         </div>
       </div>
@@ -153,13 +154,13 @@ function PostsPage() {
               <div className="post-footer">
                 <div className="post-stats">
                   <span className="post-stat">
-                    💰 {getTotalPayout(post)}
+                    <DollarSign size={16} strokeWidth={2} /> {getTotalPayout(post)}
                   </span>
                   <span className="post-stat">
-                    👍 {post.active_votes?.filter(v => v.rshares !== "0" && v.rshares !== 0).length || 0} {t('posts.votes')}
+                    <ThumbsUp size={16} strokeWidth={2} /> {post.active_votes?.filter(v => v.rshares !== "0" && v.rshares !== 0).length || 0} {t('posts.votes')}
                   </span>
                   <span className="post-stat">
-                    💬 {post.children || 0} {t('posts.replies')}
+                    <MessageCircle size={16} strokeWidth={2} /> {post.children || 0} {t('posts.replies')}
                   </span>
                 </div>
                 <div className="post-time">

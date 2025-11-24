@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Box, Coins, TrendingUp, Database, DollarSign } from 'lucide-react';
 import { getLatestBlockNum, getBlocks, getDynamicGlobalProperties } from '../services/steemApi';
 import BlockTable from '../components/BlockTable';
 import { useTranslation } from '../i18n.jsx';
@@ -93,7 +94,9 @@ function DashboardPage() {
 
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon">🧊</div>
+          <div className="stat-icon">
+            <Box size={32} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.latestBlock')}</div>
             <div className="stat-value">{stats.headBlockNumber}</div>
@@ -101,7 +104,9 @@ function DashboardPage() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon">💰</div>
+          <div className="stat-icon">
+            <Coins size={32} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.currentSupply')}</div>
             <div className="stat-value">{stats.currentSupply}</div>
@@ -109,7 +114,9 @@ function DashboardPage() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon">📊</div>
+          <div className="stat-icon">
+            <TrendingUp size={32} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.virtualSupply')}</div>
             <div className="stat-value">{stats.virtualSupply}</div>
@@ -117,7 +124,9 @@ function DashboardPage() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon">👤</div>
+          <div className="stat-icon">
+            <Database size={32} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.totalVesting')}</div>
             <div className="stat-value">{stats.totalAccounts}</div>
@@ -125,7 +134,9 @@ function DashboardPage() {
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon">💲</div>
+          <div className="stat-icon">
+            <DollarSign size={32} strokeWidth={2} />
+          </div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.steemPerVests')}</div>
             <div className="stat-value">{stats.steemPerVests} STEEM</div>
