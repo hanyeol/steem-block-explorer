@@ -1,7 +1,6 @@
 // Steem RPC API endpoints
 const RPC_NODES = [
-  'https://api.steemit.com',
-  'https://api.steemitstage.com',
+  '/rpc',
 ];
 
 let currentNodeIndex = 0;
@@ -224,7 +223,7 @@ export const getDiscussions = async (sortBy = 'trending', query = {}) => {
 
     // Build params object with pagination support
     const params = {
-      tag: query.tag || 'steem',
+      tag: query.tag || '',
       limit,
       truncate_body: query.truncate_body || 0
     };
