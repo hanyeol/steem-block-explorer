@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getLatestBlockNum, getBlocks, getDynamicGlobalProperties } from '../services/steemApi';
 import BlockTable from '../components/BlockTable';
 import { useTranslation } from '../i18n.jsx';
+import { formatCompactNumber } from '../utils/format';
 import './DashboardPage.css';
 
 // Helper function to format asset objects
@@ -10,7 +11,7 @@ const formatAsset = (asset) => {
   if (typeof asset === 'string') return asset;
   if (asset && typeof asset === 'object' && 'amount' in asset) {
     const amount = asset.amount / Math.pow(10, asset.precision);
-    return `${amount.toFixed(asset.precision)} STEEM`;
+    return `${formatCompactNumber(amount)} STEEM`;
   }
   return 'N/A';
 };
@@ -20,7 +21,7 @@ const formatVestingShares = (shares) => {
   if (typeof shares === 'string') return shares;
   if (shares && typeof shares === 'object' && 'amount' in shares) {
     const amount = shares.amount / Math.pow(10, shares.precision);
-    return `${amount.toFixed(0)} VESTS`;
+    return `${formatCompactNumber(amount)} VESTS`;
   }
   return 'N/A';
 };
