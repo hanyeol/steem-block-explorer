@@ -90,6 +90,8 @@ const translations = {
       empty: 'No posts on chain.',
       votes: 'votes',
       replies: 'replies',
+      loadMore: 'Load More',
+      loadingMore: 'Loading...',
     },
   },
   ko: {
@@ -180,6 +182,8 @@ const translations = {
       empty: '현재 체인에 포스트가 없습니다.',
       votes: '투표',
       replies: '댓글',
+      loadMore: '더 불러오기',
+      loadingMore: '불러오는 중...',
     },
   },
   ja: {
@@ -270,6 +274,8 @@ const translations = {
       empty: 'チェーンに投稿がありません。',
       votes: '票',
       replies: '返信',
+      loadMore: 'さらに読み込む',
+      loadingMore: '読み込み中...',
     },
   },
 };

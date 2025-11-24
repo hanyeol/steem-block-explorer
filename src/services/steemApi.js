@@ -222,6 +222,21 @@ export const getDiscussions = async (sortBy = 'trending', query = {}) => {
         method = 'tags_api.get_discussions_by_trending';
     }
 
+    // Build params object with pagination support
+    const params = {
+      tag: query.tag || 'steem',
+      limit,
+      truncate_body: query.truncate_body || 0
+    };
+
+    // Add pagination parameters if provided
+    if (query.start_author) {
+      params.start_author = query.start_author;
+    }
+    if (query.start_permlink) {
+      params.start_permlink = query.start_permlink;
+    }
+
     // Use direct method call format for tags_api
     const response = await fetch(RPC_NODES[currentNodeIndex], {
       method: 'POST',
@@ -231,11 +246,7 @@ export const getDiscussions = async (sortBy = 'trending', query = {}) => {
       body: JSON.stringify({
         jsonrpc: '2.0',
         method: method,
-        params: {
-          tag: query.tag || 'steem',
-          limit,
-          truncate_body: query.truncate_body || 0
-        },
+        params: params,
         id: 1,
       }),
     });

@@ -39,7 +39,9 @@ const getTotalPayout = (post) => {
 function PostsPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [sortBy, setSortBy] = useState('trending');
+  const [hasMore, setHasMore] = useState(true);
   const { t, language } = useTranslation();
 
   useEffect(() => {
@@ -48,6 +50,7 @@ function PostsPage() {
       try {
         const postsData = await getDiscussions(sortBy, { limit: 20 });
         setPosts(postsData);
+        setHasMore(postsData.length >= 20);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch posts:', error);
@@ -57,6 +60,35 @@ function PostsPage() {
 
     fetchPosts();
   }, [sortBy]);
+
+  const loadMorePosts = async () => {
+    if (loadingMore || !hasMore || posts.length === 0) return;
+
+    setLoadingMore(true);
+    try {
+      const lastPost = posts[posts.length - 1];
+      const morePosts = await getDiscussions(sortBy, {
+        limit: 20,
+        start_author: lastPost.author,
+        start_permlink: lastPost.permlink
+      });
+
+      // Remove the first item if it's a duplicate
+      const newPosts = morePosts.filter((post, index) => {
+        if (index === 0) {
+          return post.author !== lastPost.author || post.permlink !== lastPost.permlink;
+        }
+        return true;
+      });
+
+      setPosts([...posts, ...newPosts]);
+      setHasMore(newPosts.length >= 20);
+      setLoadingMore(false);
+    } catch (error) {
+      console.error('Failed to load more posts:', error);
+      setLoadingMore(false);
+    }
+  };
 
   if (loading) {
     return <div className="posts-loading">{t('posts.loading')}</div>;
@@ -138,6 +170,18 @@ function PostsPage() {
           ))
         )}
       </div>
+
+      {hasMore && posts.length > 0 && (
+        <div className="load-more-container">
+          <button
+            className="load-more-button"
+            onClick={loadMorePosts}
+            disabled={loadingMore}
+          >
+            {loadingMore ? t('posts.loadingMore') : t('posts.loadMore')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
