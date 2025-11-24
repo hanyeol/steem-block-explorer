@@ -77,6 +77,9 @@ const translations = {
       accountCreation: 'Account Creation Fee',
       website: 'Website',
       signingKey: 'Signing Key',
+      active: 'Active',
+      top20: 'Top 20',
+      timeshare: 'Timeshare',
     },
     posts: {
       title: 'Posts',
@@ -164,6 +167,9 @@ const translations = {
       accountCreation: '계정 생성 수수료',
       website: '웹사이트',
       signingKey: '서명 키',
+      active: '활성',
+      top20: 'Top 20',
+      timeshare: '타임쉐어',
     },
     posts: {
       title: '포스트',
@@ -251,6 +257,9 @@ const translations = {
       accountCreation: 'アカウント作成手数料',
       website: 'ウェブサイト',
       signingKey: '署名キー',
+      active: 'アクティブ',
+      top20: 'トップ20',
+      timeshare: 'タイムシェア',
     },
     posts: {
       title: '投稿',

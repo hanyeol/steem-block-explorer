@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getLatestBlockNum, getBlocks, getDynamicGlobalProperties } from '../services/steemApi';
+import { Link } from 'react-router-dom';
+import { getLatestBlockNum, getBlocks, getDynamicGlobalProperties, getActiveWitnesses } from '../services/steemApi';
 import BlockTable from '../components/BlockTable';
 import { useTranslation } from '../i18n.jsx';
 import './DashboardPage.css';
@@ -52,6 +53,7 @@ function DashboardPage() {
     recentBlocks: [],
   });
   const [loading, setLoading] = useState(true);
+  const [top20Witnesses, setTop20Witnesses] = useState([]);
   const { t, language } = useTranslation();
 
   useEffect(() => {
@@ -76,7 +78,20 @@ function DashboardPage() {
       }
     };
 
+    const fetchTop20Witnesses = async () => {
+      try {
+        const witnesses = await getActiveWitnesses();
+        console.log('Active witnesses (all 21):', witnesses);
+        console.log('Top 20 witnesses:', witnesses.slice(0, 20));
+        // Active witnesses returns 21 (top 20 + 1 backup), we only need top 20
+        setTop20Witnesses(witnesses.slice(0, 20));
+      } catch (error) {
+        console.error('Failed to fetch active witnesses:', error);
+      }
+    };
+
     fetchDashboardData();
+    fetchTop20Witnesses();
     const interval = setInterval(fetchDashboardData, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -153,11 +168,22 @@ function DashboardPage() {
               key: 'witness',
               label: t('common.witness'),
               className: 'block-witness',
-              render: (block) => (
-                block.witness ? (
-                  <span className="block-witness">{block.witness}</span>
-                ) : 'N/A'
-              ),
+              render: (block) => {
+                if (!block.witness) return 'N/A';
+                const isTimeshare = top20Witnesses.length > 0 && !top20Witnesses.includes(block.witness);
+                return (
+                  <span className="witness-cell">
+                    <Link
+                      to={`/account/${block.witness}`}
+                      className="block-witness"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {block.witness}
+                    </Link>
+                    {isTimeshare && <span className="timeshare-badge">Timeshare</span>}
+                  </span>
+                );
+              },
             },
             {
               key: 'tx',
@@ -172,7 +198,6 @@ function DashboardPage() {
           rows={stats.recentBlocks.filter((block) => block && block.block_num)}
           rowKey={(block) => block.block_id || block.block_num}
           rowLink={(block) => `/block/${block.block_num}`}
-          cellLink={(col, block) => (col.key === 'witness' && block.witness ? `/account/${block.witness}` : null)}
           emptyMessage={t('dashboard.emptyBlocks')}
         />
       </div>

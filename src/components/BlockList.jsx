@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getLatestBlockNum, getBlocks, getWitnessesByVote } from '../services/steemApi';
+import { getLatestBlockNum, getBlocks, getActiveWitnesses } from '../services/steemApi';
 import { BlockListSkeleton } from './SkeletonLoader';
 import { useTranslation } from '../i18n.jsx';
 import { formatTimestampWithLocale } from '../utils/format';
@@ -29,11 +29,11 @@ const BlockList = () => {
 
   const loadTop20Witnesses = useCallback(async () => {
     try {
-      const witnesses = await getWitnessesByVote(20);
-      const witnessNames = witnesses.map(w => w.owner);
-      setTop20Witnesses(witnessNames);
+      const witnesses = await getActiveWitnesses();
+      // Active witnesses returns 21 (top 20 + 1 backup), we only need top 20
+      setTop20Witnesses(witnesses.slice(0, 20));
     } catch (err) {
-      console.error('Failed to load top 20 witnesses:', err);
+      console.error('Failed to load active witnesses:', err);
     }
   }, []);
 

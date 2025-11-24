@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './BlockTable.css';
 
 const BlockTable = ({
@@ -9,6 +9,7 @@ const BlockTable = ({
   emptyMessage = 'No data available',
   cellLink,
 }) => {
+  const navigate = useNavigate();
   const columnTemplate = columns.map((col) => col.width || '1fr').join(' ');
 
   const renderCells = (row, rowIndex) => (
@@ -49,9 +50,23 @@ const BlockTable = ({
 
     if (link) {
       return (
-        <Link key={key} to={link} {...commonProps}>
+        <div
+          key={key}
+          {...commonProps}
+          onClick={(e) => {
+            // If the clicked element is a link or inside a link, don't navigate
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+              return;
+            }
+            navigate(link);
+          }}
+          style={{
+            ...commonProps.style,
+            cursor: 'pointer',
+          }}
+        >
           {renderCells(row, rowIndex)}
-        </Link>
+        </div>
       );
     }
 

@@ -62,7 +62,7 @@ function WitnessesPage() {
                 <div className="witness-detail-item">
                   <span className="detail-label">{t('witnesses.votes')}:</span>
                   <span className="detail-value">
-                    {(parseInt(witness.votes) / 1e15).toFixed(0)} MV
+                    {Math.floor(Number(witness.votes || 0) / 1e9).toLocaleString()} MV
                   </span>
                 </div>
                 <div className="witness-detail-item">

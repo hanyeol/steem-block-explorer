@@ -24,7 +24,7 @@ const BlockDetail = ({ blockNum, block }) => {
   return (
     <DetailLayout
       className="block-detail"
-      title={`${t('common.blockNumber')} #${blockNumber.toLocaleString()}`}
+      title={`${t('common.blockNumber')} #${blockNumber}`}
       backTo="/blocks"
       actions={(
         <>
