@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getLatestBlockNum, getBlocks, getActiveWitnesses } from '../services/steemApi';
+import { getLatestBlockNum, getBlocks } from '../services/steemApi';
 import { BlockListSkeleton } from './SkeletonLoader';
 import { useTranslation } from '../i18n.jsx';
 import { formatTimestampWithLocale } from '../utils/format';
@@ -11,7 +11,6 @@ const BlockList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [latestBlock, setLatestBlock] = useState(null);
-  const [top20Witnesses, setTop20Witnesses] = useState([]);
   const { t, language } = useTranslation();
 
   const loadBlocks = useCallback(async () => {
@@ -27,34 +26,15 @@ const BlockList = () => {
     }
   }, []);
 
-  const loadTop20Witnesses = useCallback(async () => {
-    try {
-      const witnesses = await getActiveWitnesses();
-      // Active witnesses returns 21 (top 20 + 1 backup), we only need top 20
-      setTop20Witnesses(witnesses.slice(0, 20));
-    } catch (err) {
-      console.error('Failed to load active witnesses:', err);
-    }
-  }, []);
-
-  // Fetch blocks and witness list on mount and keep refreshing
+  // Fetch blocks on mount and keep refreshing
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     loadBlocks();
-    loadTop20Witnesses();
     // Refresh every 3 seconds (Steem block time)
     const interval = setInterval(loadBlocks, 3000);
     return () => clearInterval(interval);
-  }, [loadBlocks, loadTop20Witnesses]);
+  }, [loadBlocks]);
   /* eslint-enable react-hooks/set-state-in-effect */
-
-  const isTimeshareWitness = (witnessName) => {
-    // Only check if top20Witnesses is loaded
-    if (top20Witnesses.length === 0) {
-      return false;
-    }
-    return !top20Witnesses.includes(witnessName);
-  };
 
   const formatTimestamp = (timestamp) => formatTimestampWithLocale(timestamp, language);
 
@@ -98,9 +78,6 @@ const BlockList = () => {
                 <Link to={`/account/${block.witness}`} className="witness-link">
                   {block.witness}
                 </Link>
-                {isTimeshareWitness(block.witness) && (
-                  <span className="timeshare-badge">Timeshare</span>
-                )}
               </td>
             </tr>
           ))}

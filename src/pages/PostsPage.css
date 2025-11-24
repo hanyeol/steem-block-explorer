@@ -129,6 +129,9 @@
   line-height: 1.6;
   margin-bottom: 1rem;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .post-footer {

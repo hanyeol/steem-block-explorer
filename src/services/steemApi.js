@@ -181,35 +181,6 @@ export const getWitnessesByVote = async (limit = 100) => {
 };
 
 /**
- * Get active witnesses (currently producing blocks) sorted by votes
- */
-export const getActiveWitnesses = async () => {
-  try {
-    // Get active witness names
-    const result = await rpcCall('database_api', 'get_active_witnesses', {});
-    const witnessNames = result.witnesses.filter(w => w);
-
-    // Get detailed info for all active witnesses
-    const witnessDetails = await rpcCall('database_api', 'find_witnesses', {
-      owners: witnessNames
-    });
-
-    // Sort by votes (descending)
-    const sorted = witnessDetails.witnesses.sort((a, b) => {
-      const votesA = typeof a.votes === 'string' ? BigInt(a.votes) : BigInt(a.votes || 0);
-      const votesB = typeof b.votes === 'string' ? BigInt(b.votes) : BigInt(b.votes || 0);
-      return votesB > votesA ? 1 : votesB < votesA ? -1 : 0;
-    });
-
-    // Return just the owner names in vote order
-    return sorted.map(w => w.owner);
-  } catch (error) {
-    console.error('Failed to fetch active witnesses:', error);
-    return [];
-  }
-};
-
-/**
  * Get discussions by created (latest posts)
  * Note: Using list_comments with database_api
  */

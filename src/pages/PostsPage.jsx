@@ -124,7 +124,7 @@ function PostsPage() {
                     💰 {getTotalPayout(post)}
                   </span>
                   <span className="post-stat">
-                    👍 {post.net_votes || 0} {t('posts.votes')}
+                    👍 {post.active_votes?.filter(v => v.rshares !== "0" && v.rshares !== 0).length || 0} {t('posts.votes')}
                   </span>
                   <span className="post-stat">
                     💬 {post.children || 0} {t('posts.replies')}
