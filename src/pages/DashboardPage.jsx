@@ -95,7 +95,7 @@ function DashboardPage() {
           <div className="stat-icon">🧊</div>
           <div className="stat-content">
             <div className="stat-label">{t('dashboard.stats.latestBlock')}</div>
-            <div className="stat-value">{stats.headBlockNumber.toLocaleString()}</div>
+            <div className="stat-value">{stats.headBlockNumber}</div>
           </div>
         </div>
 
